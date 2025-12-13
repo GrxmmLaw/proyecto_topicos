@@ -8,8 +8,8 @@ from functools import partial
 
 K_SIZE = 31
 HLL_ERROR_RATE = 0.01
-INPUT_DIR = "UHGG_reps"   
-OUTPUT_SKETCH = "HLL_R_UHGG.sketch"
+INPUT_DIR = "catalogo"   
+OUTPUT_SKETCH = "HLL_catalogo_bajo.sketch"
 
 def get_canonical_kmer(kmer):
     kmer_upper = kmer.upper()
