@@ -4,18 +4,18 @@ import time
 import pandas as pd
 import math
 
-# --- Configuracion inicial ---
-OUTPUT_DIR = "muestras_validacion_wave"
+# Configuracion inicial
+OUTPUT_DIR = "muestras_validacion"
 WINDOW_SIZE = 200000    
 TOTAL_READS = 6000000   
 READ_LENGTH = 150
 K_SIZE = 31
 
-# Configuración Onda de Ruido 
+# Configuracion de Onda de Ruido 
 NOISE_CYCLES = 4       
 MAX_NOISE_RARITY = 0.05 
 
-# Configuración Evento
+# Configuracion de Evento
 EVENT_START = 2000000
 EVENT_END = 4000000
 PEAK_PROB = 0.10        
@@ -37,7 +37,7 @@ RUTAS_GENOMAS = {
 
 def cargar_secuencia_limpia(ruta):
     if not os.path.exists(ruta):
-        print(f"[ERROR] No encuentro: {ruta}")
+        print(f"[ERROR] No se encuentra: {ruta}")
         return "N" * READ_LENGTH 
     with open(ruta, 'r') as f:
         lines = f.readlines()
@@ -90,7 +90,7 @@ def get_prob_triangular(idx, start, end, peak):
         return peak * (end - idx) / (end - mid)
 
 def generar_muestra(tipo_catalogo, modo, rutas):
-    print(f"\n--- Generando {tipo_catalogo} [{modo}] (Onda 0-5%) ---")
+    print(f"\n--- Generando {tipo_catalogo} [{modo}]  ---")
     
     if not os.path.exists(OUTPUT_DIR): os.makedirs(OUTPUT_DIR)
     nombre_base = f"{tipo_catalogo}_{modo}"
@@ -109,20 +109,17 @@ def generar_muestra(tipo_catalogo, modo, rutas):
     with open(fastq_path, 'w') as fq:
         for i in range(TOTAL_READS):
             
-            # --- DETERMINAR TASA DE ERROR Y ANOMALÍA ---
             if modo == "CONTROL":
-                # Onda de ruido
                 tasa_error_actual, rareza_esperada = get_wave_error_rate(i, TOTAL_READS)
                 usar_anomalia = False
-                valor_grafico_verdad = rareza_esperada # Graficamos la onda
+                valor_grafico_verdad = rareza_esperada 
                 
-            else: # TEST 
+            else:  
                 tasa_error_actual = 0.001 
                 prob_anomalia = get_prob_triangular(i, EVENT_START, EVENT_END, PEAK_PROB)
                 usar_anomalia = (random.random() < prob_anomalia)
                 valor_grafico_verdad = 1.0 if usar_anomalia else 0.0
 
-            # --- GENERAR READ ---
             if usar_anomalia:
                 read = simular_read_con_error(seq_anomalo, tasa_error_actual)
                 label = "ANOMALIA"
@@ -135,7 +132,6 @@ def generar_muestra(tipo_catalogo, modo, rutas):
             sum_valor_grafico += valor_grafico_verdad
             count_window_reads += 1
 
-            # --- ESTADÍSTICAS POR VENTANA ---
             if (i + 1) % WINDOW_SIZE == 0:
                 ventana_idx = (i + 1) // WINDOW_SIZE
                 promedio_verdad = sum_valor_grafico / count_window_reads

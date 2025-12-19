@@ -17,14 +17,12 @@ TAREAS = [
 ]
 
 def get_canonical_kmer(kmer):
-    """Obtiene el k-mer canónico (el menor alfabéticamente entre el k-mer y su reverso complementario)."""
     kmer_upper = kmer.upper()
     trans = str.maketrans("ATCGN", "TAGCN")
     rc = kmer_upper.translate(trans)[::-1]
     return min(kmer_upper, rc)
 
 def process_single_genome(args):
-    """Procesa un solo archivo FASTA y devuelve su HLL."""
     file_path, k_size, error_rate = args
 
     local_hll = hyperloglog.HyperLogLog(error_rate)
@@ -42,13 +40,11 @@ def process_single_genome(args):
         return local_hll
         
     except Exception as e:
-        print(f"\n[ERROR] Falló el archivo {os.path.basename(file_path)}: {e}")
+        print(f"\n[ERROR] Fallo el archivo {os.path.basename(file_path)}: {e}")
         return None
 
 def construir_sketch_para_carpeta(input_dir, output_sketch):
-    """
-    Función orquestadora para procesar todos los fasta de una carpeta y fusionarlos en un solo Sketch.
-    """
+
     print(f"\n" + "="*60)
     print(f"PROCESANDO CATÁLOGO: {input_dir}")
     print(f"="*60)
@@ -72,8 +68,6 @@ def construir_sketch_para_carpeta(input_dir, output_sketch):
 
     num_cores = multiprocessing.cpu_count()
     cores_to_use = max(1, num_cores - 1) 
-    
-    print(f"-> Iniciando Pool con {cores_to_use} núcleos...")
     start_time = time.time()
 
     master_hll = hyperloglog.HyperLogLog(HLL_ERROR_RATE)
@@ -104,7 +98,7 @@ def construir_sketch_para_carpeta(input_dir, output_sketch):
     print("-> Guardado exitoso.\n")
 
 def main():
-    print(f"--- GENERADOR DE GROUND TRUTH (HLL) ---")
+    print(f"--- Generador de catalogos HLL ---")
     print(f"K-mer size: {K_SIZE}")
     print(f"Error rate: {HLL_ERROR_RATE}")
     print(f"Carpeta de salida: {OUTPUT_DIR}")
@@ -119,7 +113,7 @@ def main():
         ruta_salida_completa = os.path.join(OUTPUT_DIR, nombre_archivo)
         construir_sketch_para_carpeta(carpeta_origen, ruta_salida_completa)
         
-    print(f"--- TODO FINALIZADO en {(time.time() - total_start)/60:.2f} minutos ---")
+    print(f"--- Tiempo total: {(time.time() - total_start)/60:.2f} minutos ---")
 
 if __name__ == "__main__":
     multiprocessing.freeze_support() 
