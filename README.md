@@ -2,6 +2,16 @@
 
 **Integrantes:** Maximiliano Lopez - Iván Zapata
 
+## Archivos de pruebas
+
+Las siguientes carpetas de datos **no están incluidas en este repositorio** debido a su tamaño:
+
+Descargala: [Este enlace](https://drive.google.com/drive/folders/1cUjYGXsyV7hDEPq4DcF2QRbBSNzZ4wtz?usp=sharing)
+
+Hay que colocar estas carpetas en la raíz del proyecto.
+
+---
+
 ## Descripción General
 
 Este proyecto implementa un sistema de generación y análisis de datos sintéticos de genomas. El objetivo es crear catálogos de secuencias genómicas simuladas con diferentes grados de similitud, extraer k-mers característicos de cada catálogo y generar muestras (reads) para análisis de anomalías. El proyecto funciona en tres etapas principales:
